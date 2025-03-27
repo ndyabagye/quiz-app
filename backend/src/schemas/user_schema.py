@@ -1,6 +1,6 @@
 "Pydantic models"
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 class UserBase(BaseModel):
     """Default schema has username added"""
@@ -16,7 +16,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     """Finally, we add the id and active"""
-    id: int
+    id: UUID4
     is_active: bool
 
     class Config:

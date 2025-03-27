@@ -1,6 +1,6 @@
 "Pydantic models"
 
-from src.schemas.users import BaseModel,UserBase
+from src.schemas.user_schema import BaseModel,UserBase
 
 class UserResponse(UserBase):
     """Return after login"""

@@ -6,13 +6,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 #Imports from Users Module
-from src.schemas.users import UserCreate
-from src.models.users import User
+from src.schemas.user_schema import UserCreate
+from src.models.user_model import User
 
 #Imports from auth module
-from src.dependencies.auth import get_db, authenticate_user, get_user
+from src.dependencies.auth_dependecies import get_db, authenticate_user, get_user
 from src.utils.auth import create_access_token, get_password_hash
-from src.schemas.auth import UserResponse, Token
+from src.schemas.auth_schema import UserResponse, Token
 
 
 router = APIRouter()

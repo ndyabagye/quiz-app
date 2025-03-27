@@ -10,7 +10,8 @@ from sqlalchemy import pool
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'src'))
 
 from alembic import context
-from models.users import Base as UsersBase
+from models import Base
+
 
 
 
@@ -30,7 +31,7 @@ if config.config_file_name is not None:
 
 
 # Include both model bases in the target_metadata
-target_metadata = [UsersBase.metadata]
+target_metadata = [Base.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
