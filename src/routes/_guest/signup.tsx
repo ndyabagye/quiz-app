@@ -24,7 +24,7 @@ const signUpSchema = z.object({
 
 type SignUpFormValues = z.infer<typeof signUpSchema>
 
-export const Route = createFileRoute('/signup')({
+export const Route = createFileRoute('/_guest/signup')({
   component: SignUpPage,
 })
 

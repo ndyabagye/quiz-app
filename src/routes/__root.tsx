@@ -1,7 +1,6 @@
 import { AuthContext } from '@/auth'
-import Layout from '@/components/modules/layout/templates'
 import { Button } from '@/components/ui/button'
-import { createRootRouteWithContext, Link } from '@tanstack/react-router'
+import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { AlertTriangle } from 'lucide-react'
 
@@ -12,7 +11,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <Layout />
+      <Outlet />
       <TanStackRouterDevtools />
     </>
   ),

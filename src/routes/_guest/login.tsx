@@ -18,7 +18,7 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_guest/login')({
   component: LoginPage,
 })
 
@@ -56,8 +56,6 @@ function LoginPage() {
       toast.error(error.response?.data?.detail || 'Sign up failed. Please try again.')
     }
   });
-
-
 
   return (
     <Card className="max-w-md mx-auto">

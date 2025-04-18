@@ -11,32 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SignupImport } from './routes/signup'
-import { Route as LoginImport } from './routes/login'
-import { Route as AboutImport } from './routes/about'
+import { Route as GuestImport } from './routes/_guest'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as IndexImport } from './routes/index'
+import { Route as GuestIndexImport } from './routes/_guest/index'
+import { Route as GuestSignupImport } from './routes/_guest/signup'
+import { Route as GuestLoginImport } from './routes/_guest/login'
+import { Route as GuestAboutImport } from './routes/_guest/about'
 import { Route as AuthQuizImport } from './routes/_auth/quiz'
 import { Route as AuthHomeImport } from './routes/_auth/home'
 import { Route as AuthQuizSubjectImport } from './routes/_auth/quiz/$subject'
 
 // Create/Update Routes
 
-const SignupRoute = SignupImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
+const GuestRoute = GuestImport.update({
+  id: '/_guest',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -45,10 +33,28 @@ const AuthRoute = AuthImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const GuestIndexRoute = GuestIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => GuestRoute,
+} as any)
+
+const GuestSignupRoute = GuestSignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => GuestRoute,
+} as any)
+
+const GuestLoginRoute = GuestLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => GuestRoute,
+} as any)
+
+const GuestAboutRoute = GuestAboutImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => GuestRoute,
 } as any)
 
 const AuthQuizRoute = AuthQuizImport.update({
@@ -73,13 +79,6 @@ const AuthQuizSubjectRoute = AuthQuizSubjectImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -87,25 +86,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupImport
+    '/_guest': {
+      id: '/_guest'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof GuestImport
       parentRoute: typeof rootRoute
     }
     '/_auth/home': {
@@ -121,6 +106,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/quiz'
       preLoaderRoute: typeof AuthQuizImport
       parentRoute: typeof AuthImport
+    }
+    '/_guest/about': {
+      id: '/_guest/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof GuestAboutImport
+      parentRoute: typeof GuestImport
+    }
+    '/_guest/login': {
+      id: '/_guest/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof GuestLoginImport
+      parentRoute: typeof GuestImport
+    }
+    '/_guest/signup': {
+      id: '/_guest/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof GuestSignupImport
+      parentRoute: typeof GuestImport
+    }
+    '/_guest/': {
+      id: '/_guest/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof GuestIndexImport
+      parentRoute: typeof GuestImport
     }
     '/_auth/quiz/$subject': {
       id: '/_auth/quiz/$subject'
@@ -158,88 +171,100 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface GuestRouteChildren {
+  GuestAboutRoute: typeof GuestAboutRoute
+  GuestLoginRoute: typeof GuestLoginRoute
+  GuestSignupRoute: typeof GuestSignupRoute
+  GuestIndexRoute: typeof GuestIndexRoute
+}
+
+const GuestRouteChildren: GuestRouteChildren = {
+  GuestAboutRoute: GuestAboutRoute,
+  GuestLoginRoute: GuestLoginRoute,
+  GuestSignupRoute: GuestSignupRoute,
+  GuestIndexRoute: GuestIndexRoute,
+}
+
+const GuestRouteWithChildren = GuestRoute._addFileChildren(GuestRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '': typeof GuestRouteWithChildren
   '/home': typeof AuthHomeRoute
   '/quiz': typeof AuthQuizRouteWithChildren
+  '/about': typeof GuestAboutRoute
+  '/login': typeof GuestLoginRoute
+  '/signup': typeof GuestSignupRoute
+  '/': typeof GuestIndexRoute
   '/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
   '/home': typeof AuthHomeRoute
   '/quiz': typeof AuthQuizRouteWithChildren
+  '/about': typeof GuestAboutRoute
+  '/login': typeof GuestLoginRoute
+  '/signup': typeof GuestSignupRoute
+  '/': typeof GuestIndexRoute
   '/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/about': typeof AboutRoute
-  '/login': typeof LoginRoute
-  '/signup': typeof SignupRoute
+  '/_guest': typeof GuestRouteWithChildren
   '/_auth/home': typeof AuthHomeRoute
   '/_auth/quiz': typeof AuthQuizRouteWithChildren
+  '/_guest/about': typeof GuestAboutRoute
+  '/_guest/login': typeof GuestLoginRoute
+  '/_guest/signup': typeof GuestSignupRoute
+  '/_guest/': typeof GuestIndexRoute
   '/_auth/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | ''
+    | '/home'
+    | '/quiz'
     | '/about'
     | '/login'
     | '/signup'
-    | '/home'
-    | '/quiz'
+    | '/'
     | '/quiz/$subject'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | ''
+    | '/home'
+    | '/quiz'
     | '/about'
     | '/login'
     | '/signup'
-    | '/home'
-    | '/quiz'
+    | '/'
     | '/quiz/$subject'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
-    | '/about'
-    | '/login'
-    | '/signup'
+    | '/_guest'
     | '/_auth/home'
     | '/_auth/quiz'
+    | '/_guest/about'
+    | '/_guest/login'
+    | '/_guest/signup'
+    | '/_guest/'
     | '/_auth/quiz/$subject'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  LoginRoute: typeof LoginRoute
-  SignupRoute: typeof SignupRoute
+  GuestRoute: typeof GuestRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
-  AboutRoute: AboutRoute,
-  LoginRoute: LoginRoute,
-  SignupRoute: SignupRoute,
+  GuestRoute: GuestRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -252,15 +277,9 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
         "/_auth",
-        "/about",
-        "/login",
-        "/signup"
+        "/_guest"
       ]
-    },
-    "/": {
-      "filePath": "index.tsx"
     },
     "/_auth": {
       "filePath": "_auth.tsx",
@@ -269,14 +288,14 @@ export const routeTree = rootRoute
         "/_auth/quiz"
       ]
     },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/signup": {
-      "filePath": "signup.tsx"
+    "/_guest": {
+      "filePath": "_guest.tsx",
+      "children": [
+        "/_guest/about",
+        "/_guest/login",
+        "/_guest/signup",
+        "/_guest/"
+      ]
     },
     "/_auth/home": {
       "filePath": "_auth/home.tsx",
@@ -288,6 +307,22 @@ export const routeTree = rootRoute
       "children": [
         "/_auth/quiz/$subject"
       ]
+    },
+    "/_guest/about": {
+      "filePath": "_guest/about.tsx",
+      "parent": "/_guest"
+    },
+    "/_guest/login": {
+      "filePath": "_guest/login.tsx",
+      "parent": "/_guest"
+    },
+    "/_guest/signup": {
+      "filePath": "_guest/signup.tsx",
+      "parent": "/_guest"
+    },
+    "/_guest/": {
+      "filePath": "_guest/index.tsx",
+      "parent": "/_guest"
     },
     "/_auth/quiz/$subject": {
       "filePath": "_auth/quiz/$subject.tsx",
