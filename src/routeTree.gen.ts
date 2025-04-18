@@ -11,10 +11,28 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SignupImport } from './routes/signup'
+import { Route as LoginImport } from './routes/login'
 import { Route as AboutImport } from './routes/about'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthQuizImport } from './routes/_auth/quiz'
+import { Route as AuthHomeImport } from './routes/_auth/home'
+import { Route as AuthQuizSubjectImport } from './routes/_auth/quiz/$subject'
 
 // Create/Update Routes
+
+const SignupRoute = SignupImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AboutRoute = AboutImport.update({
   id: '/about',
@@ -22,10 +40,33 @@ const AboutRoute = AboutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthQuizRoute = AuthQuizImport.update({
+  id: '/quiz',
+  path: '/quiz',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthHomeRoute = AuthHomeImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthQuizSubjectRoute = AuthQuizSubjectImport.update({
+  id: '/$subject',
+  path: '/$subject',
+  getParentRoute: () => AuthQuizRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -39,6 +80,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -46,44 +94,152 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/home': {
+      id: '/_auth/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthHomeImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/quiz': {
+      id: '/_auth/quiz'
+      path: '/quiz'
+      fullPath: '/quiz'
+      preLoaderRoute: typeof AuthQuizImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/quiz/$subject': {
+      id: '/_auth/quiz/$subject'
+      path: '/$subject'
+      fullPath: '/quiz/$subject'
+      preLoaderRoute: typeof AuthQuizSubjectImport
+      parentRoute: typeof AuthQuizImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AuthQuizRouteChildren {
+  AuthQuizSubjectRoute: typeof AuthQuizSubjectRoute
+}
+
+const AuthQuizRouteChildren: AuthQuizRouteChildren = {
+  AuthQuizSubjectRoute: AuthQuizSubjectRoute,
+}
+
+const AuthQuizRouteWithChildren = AuthQuizRoute._addFileChildren(
+  AuthQuizRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthHomeRoute: typeof AuthHomeRoute
+  AuthQuizRoute: typeof AuthQuizRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthHomeRoute: AuthHomeRoute,
+  AuthQuizRoute: AuthQuizRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/home': typeof AuthHomeRoute
+  '/quiz': typeof AuthQuizRouteWithChildren
+  '/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/home': typeof AuthHomeRoute
+  '/quiz': typeof AuthQuizRouteWithChildren
+  '/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
+  '/_auth/home': typeof AuthHomeRoute
+  '/_auth/quiz': typeof AuthQuizRouteWithChildren
+  '/_auth/quiz/$subject': typeof AuthQuizSubjectRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | ''
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/home'
+    | '/quiz'
+    | '/quiz/$subject'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | ''
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/home'
+    | '/quiz'
+    | '/quiz/$subject'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/about'
+    | '/login'
+    | '/signup'
+    | '/_auth/home'
+    | '/_auth/quiz'
+    | '/_auth/quiz/$subject'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
   AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
   AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,14 +253,45 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about"
+        "/_auth",
+        "/about",
+        "/login",
+        "/signup"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/home",
+        "/_auth/quiz"
+      ]
+    },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/login": {
+      "filePath": "login.tsx"
+    },
+    "/signup": {
+      "filePath": "signup.tsx"
+    },
+    "/_auth/home": {
+      "filePath": "_auth/home.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/quiz": {
+      "filePath": "_auth/quiz.tsx",
+      "parent": "/_auth",
+      "children": [
+        "/_auth/quiz/$subject"
+      ]
+    },
+    "/_auth/quiz/$subject": {
+      "filePath": "_auth/quiz/$subject.tsx",
+      "parent": "/_auth/quiz"
     }
   }
 }
